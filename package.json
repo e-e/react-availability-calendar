@@ -1,0 +1,30 @@
+{
+  "name": "react-availability-calendar",
+  "version": "0.0.1",
+  "description": "Put a description here",
+  "main": "build/index.js",
+  "peerDependencies": {
+    "react": "^15.5.4"
+  },
+  "dependencies": {
+    "react": "^15.6.2",
+    "webpack": "^2.7.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch",
+    "build": "webpack"
+  },
+  "author": {
+    "name": "Eric Ellingson",
+    "email": "god@eric.wtf"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1"
+  }
+}
