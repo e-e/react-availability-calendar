@@ -108,6 +108,10 @@ var _CalendarColumn = __webpack_require__(5);
 
 var _CalendarColumn2 = _interopRequireDefault(_CalendarColumn);
 
+var _constants = __webpack_require__(1);
+
+var _utils = __webpack_require__(8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -126,46 +130,27 @@ var CalendarBody = function (_React$Component) {
   }
 
   _createClass(CalendarBody, [{
+    key: 'renderColumns',
+    value: function renderColumns(bins) {
+      var _this2 = this;
+
+      return _constants.DAYS_OF_WEEK.map(function (dow) {
+        return _react2.default.createElement(_CalendarColumn2.default, {
+          year: _this2.props.year,
+          month: _this2.props.month,
+          dayOfWeek: dow,
+          days: bins[dow]
+        });
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var bins = (0, _utils.binDates)(this.props.year, this.props.month);
       return _react2.default.createElement(
         'div',
         { style: styles },
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Sunday',
-          month: this.props.month,
-          year: this.props.year
-        }),
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Monday',
-          month: this.props.month,
-          year: this.props.year
-        }),
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Tuesday',
-          month: this.props.month,
-          year: this.props.year
-        }),
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Wednesday',
-          month: this.props.month,
-          year: this.props.year
-        }),
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Thursday',
-          month: this.props.month,
-          year: this.props.year
-        }),
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Friday',
-          month: this.props.month,
-          year: this.props.year
-        }),
-        _react2.default.createElement(_CalendarColumn2.default, {
-          dayOfWeek: 'Saturday',
-          month: this.props.month,
-          year: this.props.year
-        })
+        this.renderColumns(bins)
       );
     }
   }]);
@@ -447,58 +432,24 @@ var CalendarColumn = function (_React$Component) {
   _createClass(CalendarColumn, [{
     key: 'renderColumn',
     value: function renderColumn() {
-      var dowIndex = _constants.DAYS_OF_WEEK.indexOf(this.props.dayOfWeek);
-      var numDays = (0, _utils.daysInMonth)(this.props.month, this.props.year);
-      var numDaysAdded = 0;
-      var cells = [];
-      for (var i = 1; i <= numDays; i++) {
-        var date = new Date(this.props.year, this.props.month, i);
-        var dow = date.getDay();
-        if (_constants.DAYS_OF_WEEK[dow] === this.props.dayOfWeek) {
-          if (!cells.length && i > dowIndex + 1) {
-            cells.push(_react2.default.createElement(_CalendarDay2.default, null));
-          }
-          cells.push(_react2.default.createElement(_CalendarDay2.default, {
-            key: this.props.year + '-' + this.props.month + '-' + i,
-            year: this.props.year,
-            month: this.props.month,
-            day: i
-          }));
-        }
-      }
-      console.log(this.props);
-      return cells;
-    }
-    // renderColumn() {
-    //   let dowIndex = DAYS_OF_WEEK.indexOf(this.props.dayOfWeek);
-    //   console.log(this.props.dayOfWeek, dowIndex);
-    //   let numDays = daysInMonth(this.props.month, this.props.year);
-    //   let numDaysAdded = 0;
-    //   let cells = [];
-    //   for (let i = 1; i <= numDays; i++) {
-    //     let date = new Date(this.props.year, this.props.month, i);
-    //     let dow = date.getDay();
-    //     if (DAYS_OF_WEEK[dow] === this.props.dayOfWeek) {
-    //       if (!cells.length && i > dowIndex + 1) {
-    //         cells.push(<CalendarDay />);
-    //       }
-    //       cells.push(
-    //         <CalendarDay
-    //           key={`${this.props.year}-${this.props.month}-${i}`}
-    //           year={this.props.year}
-    //           month={this.props.month}
-    //           day={i}
-    //         />
-    //       );
-    //     }
-    //   }
-    //   console.log(this.props);
-    //   return cells;
-    // }
+      var _this2 = this;
 
+      return this.props.days.map(function (day) {
+        // console.log(this.props.dayOfWeek, day);
+        if (!day) return _react2.default.createElement(_CalendarDay2.default, {
+          key: 'column-' + _this2.props.year + '-' + _this2.props.month + '-' + day + '-' + _this2.props.dayOfWeek
+        });else return _react2.default.createElement(_CalendarDay2.default, {
+          key: 'day-' + _this2.props.year + '-' + _this2.props.month + '-' + day + '-' + _this2.props.dayOfWeek,
+          year: _this2.props.year,
+          month: _this2.props.month,
+          day: day
+        });
+      });
+    }
   }, {
     key: 'render',
     value: function render() {
+      console.log('rendering column');
       return _react2.default.createElement(
         'div',
         { style: styles.wrap },

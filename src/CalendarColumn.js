@@ -5,57 +5,30 @@ import { daysInMonth } from './utils/utils';
 
 class CalendarColumn extends React.Component {
   renderColumn() {
-    let dowIndex = DAYS_OF_WEEK.indexOf(this.props.dayOfWeek);
-    let numDays = daysInMonth(this.props.month, this.props.year);
-    let numDaysAdded = 0;
-    let cells = [];
-    for (let i = 1; i <= numDays; i++) {
-      let date = new Date(this.props.year, this.props.month, i);
-      let dow = date.getDay();
-      if (DAYS_OF_WEEK[dow] === this.props.dayOfWeek) {
-        if (!cells.length && i > dowIndex + 1) {
-          cells.push(<CalendarDay />);
-        }
-        cells.push(
+    return this.props.days.map(day => {
+      // console.log(this.props.dayOfWeek, day);
+      if (!day)
+        return (
           <CalendarDay
-            key={`${this.props.year}-${this.props.month}-${i}`}
-            year={this.props.year}
-            month={this.props.month}
-            day={i}
+            key={`column-${this.props.year}-${this.props.month}-${day}-${this
+              .props.dayOfWeek}`}
           />
         );
-      }
-    }
-    console.log(this.props);
-    return cells;
+      else
+        return (
+          <CalendarDay
+            key={`day-${this.props.year}-${this.props.month}-${day}-${this.props
+              .dayOfWeek}`}
+            year={this.props.year}
+            month={this.props.month}
+            day={day}
+          />
+        );
+    });
   }
-  // renderColumn() {
-  //   let dowIndex = DAYS_OF_WEEK.indexOf(this.props.dayOfWeek);
-  //   console.log(this.props.dayOfWeek, dowIndex);
-  //   let numDays = daysInMonth(this.props.month, this.props.year);
-  //   let numDaysAdded = 0;
-  //   let cells = [];
-  //   for (let i = 1; i <= numDays; i++) {
-  //     let date = new Date(this.props.year, this.props.month, i);
-  //     let dow = date.getDay();
-  //     if (DAYS_OF_WEEK[dow] === this.props.dayOfWeek) {
-  //       if (!cells.length && i > dowIndex + 1) {
-  //         cells.push(<CalendarDay />);
-  //       }
-  //       cells.push(
-  //         <CalendarDay
-  //           key={`${this.props.year}-${this.props.month}-${i}`}
-  //           year={this.props.year}
-  //           month={this.props.month}
-  //           day={i}
-  //         />
-  //       );
-  //     }
-  //   }
-  //   console.log(this.props);
-  //   return cells;
-  // }
+
   render() {
+    console.log('rendering column');
     return (
       <div style={styles.wrap}>
         <div style={styles.header}>{this.props.dayOfWeek}</div>

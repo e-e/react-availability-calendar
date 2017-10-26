@@ -1,50 +1,27 @@
 import React from 'react';
 import CalendarColumn from './CalendarColumn';
+import { DAYS_OF_WEEK } from './utils/constants';
+import { binDates } from './utils/utils';
 
 class CalendarBody extends React.Component {
   constructor(props) {
     super(props);
   }
+  renderColumns(bins) {
+    return DAYS_OF_WEEK.map(dow => {
+      return (
+        <CalendarColumn
+          year={this.props.year}
+          month={this.props.month}
+          dayOfWeek={dow}
+          days={bins[dow]}
+        />
+      );
+    });
+  }
   render() {
-    return (
-      <div style={styles}>
-        <CalendarColumn
-          dayOfWeek="Sunday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-        <CalendarColumn
-          dayOfWeek="Monday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-        <CalendarColumn
-          dayOfWeek="Tuesday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-        <CalendarColumn
-          dayOfWeek="Wednesday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-        <CalendarColumn
-          dayOfWeek="Thursday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-        <CalendarColumn
-          dayOfWeek="Friday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-        <CalendarColumn
-          dayOfWeek="Saturday"
-          month={this.props.month}
-          year={this.props.year}
-        />
-      </div>
-    );
+    let bins = binDates(this.props.year, this.props.month);
+    return <div style={styles}>{this.renderColumns(bins)}</div>;
   }
 }
 const styles = {

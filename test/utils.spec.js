@@ -77,39 +77,67 @@ describe('binDates', () => {
 
   describe('#binDates', () => {
     it('should correctly sort month dates to their weekdays in the correct order with spacer days at the beginning and end of month', () => {
-      // zero-indexed; 10 === november;
-      let month = 10;
-      let year = 2017;
-      let binnedDates = binDates(year, month);
+      let tests = [
+        {
+          // zero-indexed; 10 === november;
+          month: 10,
+          year: 2017,
+          expected: {
+            Sunday: [0, 5, 12, 19, 26],
+            Monday: [0, 6, 13, 20, 27],
+            Tuesday: [0, 7, 14, 21, 28],
+            Wednesday: [1, 8, 15, 22, 29],
+            Thursday: [2, 9, 16, 23, 30],
+            Friday: [3, 10, 17, 24, 0],
+            Saturday: [4, 11, 18, 25, 0]
+          }
+        },
+        {
+          month: 1,
+          year: 2014,
+          expected: {
+            Sunday: [0, 2, 9, 16, 23],
+            Monday: [0, 3, 10, 17, 24],
+            Tuesday: [0, 4, 11, 18, 25],
+            Wednesday: [0, 5, 12, 19, 26],
+            Thursday: [0, 6, 13, 20, 27],
+            Friday: [0, 7, 14, 21, 28],
+            Saturday: [1, 8, 15, 22, 0]
+          }
+        },
+        {
+          month: 11,
+          year: 2017,
+          expected: {
+            Sunday: [0, 3, 10, 17, 24, 31],
+            Monday: [0, 4, 11, 18, 25, 0],
+            Tuesday: [0, 5, 12, 19, 26, 0],
+            Wednesday: [0, 6, 13, 20, 27, 0],
+            Thursday: [0, 7, 14, 21, 28, 0],
+            Friday: [1, 8, 15, 22, 29, 0],
+            Saturday: [2, 9, 16, 23, 30, 0]
+          }
+        },
+        {
+          month: 6,
+          year: 2017,
+          expected: {
+            Sunday: [0, 2, 9, 16, 23, 30],
+            Monday: [0, 3, 10, 17, 24, 31],
+            Tuesday: [0, 4, 11, 18, 25, 0],
+            Wednesday: [0, 5, 12, 19, 26, 0],
+            Thursday: [0, 6, 13, 20, 27, 0],
+            Friday: [0, 7, 14, 21, 28, 0],
+            Saturday: [1, 8, 15, 22, 29, 0]
+          }
+        }
+      ];
 
-      let expected = emptyMappedDays;
-      expected['Sunday'] = [0, 5, 12, 19, 26];
-      expected['Monday'] = [0, 6, 13, 20, 27];
-      expected['Tuesday'] = [0, 7, 14, 21, 28];
-      expected['Wednesday'] = [1, 8, 15, 22, 29];
-      expected['Thursday'] = [2, 9, 16, 23, 30];
-      expected['Friday'] = [3, 10, 17, 24, 0];
-      expected['Saturday'] = [4, 11, 18, 25, 0];
-
-      expect(binnedDates).to.be.an('object');
-      expect(binnedDates).to.deep.equal(expected);
-
-      // second test
-      month = 1;
-      year = 2014;
-      binnedDates = binDates(year, month);
-
-      expected = emptyMappedDays;
-      expected['Sunday'] = [0, 2, 9, 16, 23];
-      expected['Monday'] = [0, 3, 10, 17, 24];
-      expected['Tuesday'] = [0, 4, 11, 18, 25];
-      expected['Wednesday'] = [0, 5, 12, 19, 26];
-      expected['Thursday'] = [0, 6, 13, 20, 27];
-      expected['Friday'] = [0, 7, 14, 21, 28];
-      expected['Saturday'] = [1, 8, 15, 22, 0];
-
-      expect(binnedDates).to.be.an('object');
-      expect(binnedDates).to.deep.equal(expected);
+      tests.forEach(test => {
+        let actual = binDates(test.year, test.month);
+        expect(actual).to.be.an('object');
+        expect(actual).to.deep.equal(test.expected);
+      });
     });
   });
 });
