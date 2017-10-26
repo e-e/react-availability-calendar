@@ -1,7 +1,7 @@
 {
   "name": "react-availability-calendar",
   "version": "0.0.1",
-  "description": "Put a description here",
+  "description": "A react calendar",
   "main": "build/index.js",
   "peerDependencies": {
     "react": "^15.5.4"

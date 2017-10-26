@@ -131,7 +131,7 @@ var CalendarBody = function (_React$Component) {
 
   _createClass(CalendarBody, [{
     key: 'renderColumns',
-    value: function renderColumns(bins) {
+    value: function renderColumns() {
       var _this2 = this;
 
       return _constants.DAYS_OF_WEEK.map(function (dow) {
@@ -139,18 +139,17 @@ var CalendarBody = function (_React$Component) {
           year: _this2.props.year,
           month: _this2.props.month,
           dayOfWeek: dow,
-          days: bins[dow]
+          days: _this2.props.bins[dow]
         });
       });
     }
   }, {
     key: 'render',
     value: function render() {
-      var bins = (0, _utils.binDates)(this.props.year, this.props.month);
       return _react2.default.createElement(
         'div',
         { style: styles },
-        this.renderColumns(bins)
+        this.renderColumns()
       );
     }
   }]);
@@ -435,10 +434,11 @@ var CalendarColumn = function (_React$Component) {
       var _this2 = this;
 
       return this.props.days.map(function (day) {
-        // console.log(this.props.dayOfWeek, day);
         if (!day) return _react2.default.createElement(_CalendarDay2.default, {
-          key: 'column-' + _this2.props.year + '-' + _this2.props.month + '-' + day + '-' + _this2.props.dayOfWeek
+          color: _this2.props.color,
+          key: 'column-' + _this2.props.year + '-' + _this2.props.month + '-' + day + '-' + _this2.props.dayOfWeek + '-' + Math.floor(Math.random() * 1000)
         });else return _react2.default.createElement(_CalendarDay2.default, {
+          color: _this2.props.color,
           key: 'day-' + _this2.props.year + '-' + _this2.props.month + '-' + day + '-' + _this2.props.dayOfWeek,
           year: _this2.props.year,
           month: _this2.props.month,
@@ -449,7 +449,6 @@ var CalendarColumn = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.log('rendering column');
       return _react2.default.createElement(
         'div',
         { style: styles.wrap },
@@ -473,7 +472,6 @@ var styles = {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    // alignItems: 'stretch',
     border: '1px solid red'
   },
   header: {
@@ -526,7 +524,7 @@ var CalendarDay = function (_React$Component) {
         _react2.default.createElement(
           'div',
           null,
-          this.props.day
+          this.props.day || 'x'
         )
       );
     }
@@ -536,10 +534,14 @@ var CalendarDay = function (_React$Component) {
 }(_react2.default.Component);
 
 var styles = {
+  boxSizing: 'border-box',
   border: '1px solid blue',
   flex: 1
 };
 exports.default = CalendarDay;
+
+// rgb(253, 0, 67)
+// rgb(242, 225, 50)
 
 /***/ }),
 /* 7 */
@@ -570,6 +572,8 @@ var _CalendarBody = __webpack_require__(2);
 
 var _CalendarBody2 = _interopRequireDefault(_CalendarBody);
 
+var _utils = __webpack_require__(8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -586,7 +590,7 @@ var AvailabilityCalendar = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (AvailabilityCalendar.__proto__ || Object.getPrototypeOf(AvailabilityCalendar)).call(this, props));
 
-    _this.state = { month: 9, year: 2017 };
+    _this.state = { month: 9, year: 2017, bins: (0, _utils.mapDays)() };
     _this.onMonthChange = _this.onMonthChange.bind(_this);
     _this.onYearChange = _this.onYearChange.bind(_this);
     return _this;
@@ -605,6 +609,7 @@ var AvailabilityCalendar = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var bins = (0, _utils.binDates)(this.state.year, this.state.month);
       return _react2.default.createElement(
         _CalendarOuter2.default,
         null,
@@ -612,7 +617,11 @@ var AvailabilityCalendar = function (_React$Component) {
           onMonthChange: this.onMonthChange,
           onYearChange: this.onYearChange
         }),
-        _react2.default.createElement(_CalendarBody2.default, { month: this.state.month, year: this.state.year })
+        _react2.default.createElement(_CalendarBody2.default, {
+          month: this.state.month,
+          year: this.state.year,
+          bins: bins
+        })
       );
     }
   }]);
@@ -643,8 +652,9 @@ function daysInMonth(year, month) {
   var zeroIndexed = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
   // need month to not be zero indexed for this function to work
-  month = zeroIndexed ? month + 1 : month;
-  return new Date(year, month, 0).getDate();
+  // month = zeroIndexed ? month + 1 : month;
+  // return new Date(year, month, 0).getDate();
+  return 32 - new Date(year, month, 32).getDate();
 }
 
 // check if a given date is a given day of the week
@@ -686,11 +696,17 @@ function binDates(year, month) {
     bins[dow].push(i);
   }
 
+  var numWeeks = Object.keys(bins).reduce(function (max, bin) {
+    if (bins[bin].length > max) max = bins[bin].length;
+    return max;
+  }, 0);
+
   Object.keys(bins).forEach(function (bin) {
     var dowIndex = _constants.DAYS_OF_WEEK.indexOf(bin);
     if (dowIndex < firstDayIndex) {
       bins[bin].unshift(0);
-    } else if (dowIndex > lastDayIndex) {
+    }
+    if (dowIndex > lastDayIndex) {
       bins[bin].push(0);
     }
   });

@@ -7,21 +7,20 @@ class CalendarBody extends React.Component {
   constructor(props) {
     super(props);
   }
-  renderColumns(bins) {
+  renderColumns() {
     return DAYS_OF_WEEK.map(dow => {
       return (
         <CalendarColumn
           year={this.props.year}
           month={this.props.month}
           dayOfWeek={dow}
-          days={bins[dow]}
+          days={this.props.bins[dow]}
         />
       );
     });
   }
   render() {
-    let bins = binDates(this.props.year, this.props.month);
-    return <div style={styles}>{this.renderColumns(bins)}</div>;
+    return <div style={styles}>{this.renderColumns()}</div>;
   }
 }
 const styles = {

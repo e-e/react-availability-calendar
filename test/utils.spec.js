@@ -21,22 +21,21 @@ describe('binDates', () => {
   describe('#daysInMonth', () => {
     it('should return the correct number of days for a given month and year', () => {
       var tests = [
-        { month: 1, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 2, year: 2017, numDays: 28, zeroIndexed: false },
-        { month: 3, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 4, year: 2017, numDays: 30, zeroIndexed: false },
-        { month: 5, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 6, year: 2017, numDays: 30, zeroIndexed: false },
-        { month: 7, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 8, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 9, year: 2017, numDays: 30, zeroIndexed: false },
-        { month: 10, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 11, year: 2017, numDays: 30, zeroIndexed: false },
-        { month: 12, year: 2017, numDays: 31, zeroIndexed: false },
-        { month: 9, year: 2017, numDays: 31, zeroIndexed: true }
+        { month: 0, year: 2017, numDays: 31 },
+        { month: 1, year: 2017, numDays: 28 },
+        { month: 2, year: 2017, numDays: 31 },
+        { month: 3, year: 2017, numDays: 30 },
+        { month: 4, year: 2017, numDays: 31 },
+        { month: 5, year: 2017, numDays: 30 },
+        { month: 6, year: 2017, numDays: 31 },
+        { month: 7, year: 2017, numDays: 31 },
+        { month: 8, year: 2017, numDays: 30 },
+        { month: 9, year: 2017, numDays: 31 },
+        { month: 10, year: 2017, numDays: 30 },
+        { month: 11, year: 2017, numDays: 31 }
       ];
       tests.forEach(test => {
-        let actual = daysInMonth(test.year, test.month, test.zeroIndexed);
+        let actual = daysInMonth(test.year, test.month);
         if (test.zeroIndexed) console.log('actual', actual);
         expect(actual).to.be.a('number');
         expect(actual).to.equal(test.numDays);
@@ -79,6 +78,153 @@ describe('binDates', () => {
     it('should correctly sort month dates to their weekdays in the correct order with spacer days at the beginning and end of month', () => {
       let tests = [
         {
+          month: 1,
+          year: 2014,
+          expected: {
+            Sunday: [0, 2, 9, 16, 23],
+            Monday: [0, 3, 10, 17, 24],
+            Tuesday: [0, 4, 11, 18, 25],
+            Wednesday: [0, 5, 12, 19, 26],
+            Thursday: [0, 6, 13, 20, 27],
+            Friday: [0, 7, 14, 21, 28],
+            Saturday: [1, 8, 15, 22, 0]
+          }
+        },
+        {
+          month: 0,
+          year: 2017,
+          expected: {
+            Sunday: [1, 8, 15, 22, 29],
+            Monday: [2, 9, 16, 23, 30],
+            Tuesday: [3, 10, 17, 24, 31],
+            Wednesday: [4, 11, 18, 25, 0],
+            Thursday: [5, 12, 19, 26, 0],
+            Friday: [6, 13, 20, 27, 0],
+            Saturday: [7, 14, 21, 28, 0]
+          }
+        },
+        {
+          month: 1,
+          year: 2017,
+          expected: {
+            Sunday: [0, 5, 12, 19, 26],
+            Monday: [0, 6, 13, 20, 27],
+            Tuesday: [0, 7, 14, 21, 28],
+            Wednesday: [1, 8, 15, 22, 0],
+            Thursday: [2, 9, 16, 23, 0],
+            Friday: [3, 10, 17, 24, 0],
+            Saturday: [4, 11, 18, 25, 0]
+          }
+        },
+        {
+          month: 2,
+          year: 2017,
+          expected: {
+            Sunday: [0, 5, 12, 19, 26],
+            Monday: [0, 6, 13, 20, 27],
+            Tuesday: [0, 7, 14, 21, 28],
+            Wednesday: [1, 8, 15, 22, 29],
+            Thursday: [2, 9, 16, 23, 30],
+            Friday: [3, 10, 17, 24, 31],
+            Saturday: [4, 11, 18, 25, 0]
+          }
+        },
+
+        // {
+        //   month: 3,
+        //   year: 2017,
+        //   expected: {
+        //     Sunday: [],
+        //     Monday: [],
+        //     Tuesday: [],
+        //     Wednesday: [],
+        //     Thursday: [],
+        //     Friday: [],
+        //     Saturday: []
+        //   }
+        // },
+        // {
+        //   month: 4,
+        //   year: 2017,
+        //   expected: {
+        //     Sunday: [],
+        //     Monday: [],
+        //     Tuesday: [],
+        //     Wednesday: [],
+        //     Thursday: [],
+        //     Friday: [],
+        //     Saturday: []
+        //   }
+        // },
+        // {
+        //   month: 5,
+        //   year: 2017,
+        //   expected: {
+        //     Sunday: [],
+        //     Monday: [],
+        //     Tuesday: [],
+        //     Wednesday: [],
+        //     Thursday: [],
+        //     Friday: [],
+        //     Saturday: []
+        //   }
+        // },
+
+        {
+          month: 6,
+          year: 2017,
+          expected: {
+            Sunday: [0, 2, 9, 16, 23, 30],
+            Monday: [0, 3, 10, 17, 24, 31],
+            Tuesday: [0, 4, 11, 18, 25, 0],
+            Wednesday: [0, 5, 12, 19, 26, 0],
+            Thursday: [0, 6, 13, 20, 27, 0],
+            Friday: [0, 7, 14, 21, 28, 0],
+            Saturday: [1, 8, 15, 22, 29, 0]
+          }
+        },
+
+        // {
+        //   month: 7,
+        //   year: 2017,
+        //   expected: {
+        //     Sunday: [],
+        //     Monday: [],
+        //     Tuesday: [],
+        //     Wednesday: [],
+        //     Thursday: [],
+        //     Friday: [],
+        //     Saturday: []
+        //   }
+        // },
+        // {
+        //   month: 8,
+        //   year: 2017,
+        //   expected: {
+        //     Sunday: [],
+        //     Monday: [],
+        //     Tuesday: [],
+        //     Wednesday: [],
+        //     Thursday: [],
+        //     Friday: [],
+        //     Saturday: []
+        //   }
+        // },
+        // {
+        //   month: 9,
+        //   year: 2017,
+        //   expected: {
+        //     Sunday: [],
+        //     Monday: [],
+        //     Tuesday: [],
+        //     Wednesday: [],
+        //     Thursday: [],
+        //     Friday: [],
+        //     Saturday: []
+        //   }
+        // },
+
+        {
           // zero-indexed; 10 === november;
           month: 10,
           year: 2017,
@@ -93,19 +239,6 @@ describe('binDates', () => {
           }
         },
         {
-          month: 1,
-          year: 2014,
-          expected: {
-            Sunday: [0, 2, 9, 16, 23],
-            Monday: [0, 3, 10, 17, 24],
-            Tuesday: [0, 4, 11, 18, 25],
-            Wednesday: [0, 5, 12, 19, 26],
-            Thursday: [0, 6, 13, 20, 27],
-            Friday: [0, 7, 14, 21, 28],
-            Saturday: [1, 8, 15, 22, 0]
-          }
-        },
-        {
           month: 11,
           year: 2017,
           expected: {
@@ -116,19 +249,6 @@ describe('binDates', () => {
             Thursday: [0, 7, 14, 21, 28, 0],
             Friday: [1, 8, 15, 22, 29, 0],
             Saturday: [2, 9, 16, 23, 30, 0]
-          }
-        },
-        {
-          month: 6,
-          year: 2017,
-          expected: {
-            Sunday: [0, 2, 9, 16, 23, 30],
-            Monday: [0, 3, 10, 17, 24, 31],
-            Tuesday: [0, 4, 11, 18, 25, 0],
-            Wednesday: [0, 5, 12, 19, 26, 0],
-            Thursday: [0, 6, 13, 20, 27, 0],
-            Friday: [0, 7, 14, 21, 28, 0],
-            Saturday: [1, 8, 15, 22, 29, 0]
           }
         }
       ];

@@ -6,17 +6,18 @@ import { daysInMonth } from './utils/utils';
 class CalendarColumn extends React.Component {
   renderColumn() {
     return this.props.days.map(day => {
-      // console.log(this.props.dayOfWeek, day);
       if (!day)
         return (
           <CalendarDay
+            color={this.props.color}
             key={`column-${this.props.year}-${this.props.month}-${day}-${this
-              .props.dayOfWeek}`}
+              .props.dayOfWeek}-${Math.floor(Math.random() * 1000)}`}
           />
         );
       else
         return (
           <CalendarDay
+            color={this.props.color}
             key={`day-${this.props.year}-${this.props.month}-${day}-${this.props
               .dayOfWeek}`}
             year={this.props.year}
@@ -28,7 +29,6 @@ class CalendarColumn extends React.Component {
   }
 
   render() {
-    console.log('rendering column');
     return (
       <div style={styles.wrap}>
         <div style={styles.header}>{this.props.dayOfWeek}</div>
@@ -45,7 +45,6 @@ const styles = {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    // alignItems: 'stretch',
     border: '1px solid red'
   },
   header: {

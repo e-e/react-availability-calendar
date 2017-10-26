@@ -2,8 +2,9 @@ import { DAYS_OF_WEEK } from './constants';
 
 export function daysInMonth(year, month, zeroIndexed = true) {
   // need month to not be zero indexed for this function to work
-  month = zeroIndexed ? month + 1 : month;
-  return new Date(year, month, 0).getDate();
+  // month = zeroIndexed ? month + 1 : month;
+  // return new Date(year, month, 0).getDate();
+  return 32 - new Date(year, month, 32).getDate();
 }
 
 // check if a given date is a given day of the week
@@ -46,11 +47,17 @@ export function binDates(year, month, zeroIndexed = true) {
     bins[dow].push(i);
   }
 
+  let numWeeks = Object.keys(bins).reduce((max, bin) => {
+    if (bins[bin].length > max) max = bins[bin].length;
+    return max;
+  }, 0);
+
   Object.keys(bins).forEach(bin => {
     let dowIndex = DAYS_OF_WEEK.indexOf(bin);
     if (dowIndex < firstDayIndex) {
       bins[bin].unshift(0);
-    } else if (dowIndex > lastDayIndex) {
+    }
+    if (dowIndex > lastDayIndex) {
       bins[bin].push(0);
     }
   });
