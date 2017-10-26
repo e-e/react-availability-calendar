@@ -1,18 +1,5 @@
 import React from 'react';
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
+import { MONTHS } from './utils/constants';
 class CalendarHeader extends React.Component {
   constructor(props) {
     super(props);

@@ -7,11 +7,17 @@
     "react": "^15.5.4"
   },
   "dependencies": {
+    "chai": "^4.1.2",
+    "enzyme": "^3.1.0",
+    "jsdom": "^11.3.0",
+    "mocha": "^4.0.1",
     "react": "^15.6.2",
+    "react-addons-test-utils": "^15.6.2",
+    "sinon": "^4.0.2",
     "webpack": "^2.7.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require setup.js test/*.spec.js",
     "start": "webpack --watch",
     "build": "webpack"
   },
