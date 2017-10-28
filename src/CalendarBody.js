@@ -9,8 +9,10 @@ class CalendarBody extends React.Component {
   }
   renderColumns() {
     return DAYS_OF_WEEK.map(dow => {
+      const key = [this.props.year, this.props.month, dow].join('-');
       return (
         <CalendarColumn
+          key={`calendar-column-${key}`}
           year={this.props.year}
           month={this.props.month}
           dayOfWeek={dow}

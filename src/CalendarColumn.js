@@ -32,7 +32,7 @@ class CalendarColumn extends React.Component {
     return (
       <div style={styles.wrap}>
         <div style={styles.header}>{this.props.dayOfWeek}</div>
-        {this.renderColumn()}
+        <div>{this.renderColumn()}</div>
       </div>
     );
   }
@@ -44,11 +44,13 @@ const styles = {
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    border: '1px solid red'
+    justifyContent: 'flex-start'
   },
   header: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#444',
+    // backgroundColor: 'rgb(253, 0, 67)',
+    color: 'white'
   }
 };
 

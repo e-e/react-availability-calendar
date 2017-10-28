@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -87,8 +87,91 @@ var DAYS_OF_WEEK = exports.DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wedne
 
 var MONTHS = exports.MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+var JANUARY = exports.JANUARY = 0;
+var FEBRUARY = exports.FEBRUARY = 1;
+var MARCH = exports.MARCH = 2;
+var APRIL = exports.APRIL = 3;
+var MAY = exports.MAY = 4;
+var JUNE = exports.JUNE = 5;
+var JULY = exports.JULY = 6;
+var AUGUST = exports.AUGUST = 7;
+var SEPTEMBER = exports.SEPTEMBER = 8;
+var OCTOBER = exports.OCTOBER = 9;
+var NOVEMBER = exports.NOVEMBER = 10;
+var DECEMBER = exports.DECEMBER = 11;
+
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.daysInMonth = daysInMonth;
+exports.dateIsDayOfWeek = dateIsDayOfWeek;
+exports.mapDays = mapDays;
+exports.binDates = binDates;
+
+var _constants = __webpack_require__(1);
+
+function daysInMonth(year, month) {
+  return 32 - new Date(year, month, 32).getDate();
+}
+
+// check if a given date is a given day of the week
+function dateIsDayOfWeek(year, month, date, dayOfWeek) {
+  var d = new Date(year, month, date);
+  var index = d.getDay();
+  return dayOfWeek === _constants.DAYS_OF_WEEK[index];
+}
+
+function mapDays(days) {
+  var obj = {};
+  _constants.DAYS_OF_WEEK.forEach(function (day) {
+    return obj[day] = [];
+  });
+  return _constants.DAYS_OF_WEEK.reduce(function (result, day) {
+    result[day] = [];
+    return result;
+  }, {});
+}
+
+function binDates(year, month) {
+  var date = new Date(year, month, 0);
+  var bins = mapDays(_constants.DAYS_OF_WEEK);
+  var numDays = daysInMonth(year, month);
+  var firstDayIndex = 0;
+  var lastDayIndex = 0;
+
+  for (var i = 1; i <= numDays; i++) {
+    var dow = _constants.DAYS_OF_WEEK[new Date(year, month, i).getDay()];
+    if (i === 1) firstDayIndex = _constants.DAYS_OF_WEEK.indexOf(dow);else if (i === numDays) lastDayIndex = _constants.DAYS_OF_WEEK.indexOf(dow);
+    bins[dow].push(i);
+  }
+
+  var numWeeks = Object.keys(bins).reduce(function (max, bin) {
+    if (bins[bin].length > max) max = bins[bin].length;
+    return max;
+  }, 0);
+
+  Object.keys(bins).forEach(function (bin) {
+    var dowIndex = _constants.DAYS_OF_WEEK.indexOf(bin);
+    if (dowIndex < firstDayIndex) {
+      bins[bin].unshift(0);
+    }
+    if (dowIndex > lastDayIndex) {
+      bins[bin].push(0);
+    }
+  });
+
+  return bins;
+}
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104,13 +187,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _CalendarColumn = __webpack_require__(5);
+var _CalendarColumn = __webpack_require__(6);
 
 var _CalendarColumn2 = _interopRequireDefault(_CalendarColumn);
 
 var _constants = __webpack_require__(1);
 
-var _utils = __webpack_require__(8);
+var _utils = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -135,7 +218,9 @@ var CalendarBody = function (_React$Component) {
       var _this2 = this;
 
       return _constants.DAYS_OF_WEEK.map(function (dow) {
+        var key = [_this2.props.year, _this2.props.month, dow].join('-');
         return _react2.default.createElement(_CalendarColumn2.default, {
+          key: 'calendar-column-' + key,
           year: _this2.props.year,
           month: _this2.props.month,
           dayOfWeek: dow,
@@ -166,7 +251,7 @@ var styles = {
 exports.default = CalendarBody;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -226,7 +311,7 @@ var CalendarHeader = function (_React$Component) {
       return _constants.MONTHS.map(function (month, index) {
         return _react2.default.createElement(
           'option',
-          { value: index },
+          { value: index, key: 'month-' + month },
           month
         );
       });
@@ -238,7 +323,7 @@ var CalendarHeader = function (_React$Component) {
       for (var i = 2000; i <= 2017; i++) {
         years.push(_react2.default.createElement(
           'option',
-          { value: i },
+          { value: i, key: 'year-' + i },
           i
         ));
       }
@@ -250,70 +335,11 @@ var CalendarHeader = function (_React$Component) {
       console.log(this.state);
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'calendar-header' },
         _react2.default.createElement(
           'select',
           { onChange: this.monthChange, value: this.state.month },
-          _react2.default.createElement(
-            'option',
-            { value: '0' },
-            'January'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '1' },
-            'February'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '2' },
-            'March'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '3' },
-            'April'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '4' },
-            'May'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '5' },
-            'June'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '6' },
-            'July'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '7' },
-            'August'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '8' },
-            'September'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '9' },
-            'October'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '10' },
-            'November'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: '11' },
-            'December'
-          )
+          this.renderMonths()
         ),
         _react2.default.createElement(
           'select',
@@ -330,7 +356,7 @@ var CalendarHeader = function (_React$Component) {
 exports.default = CalendarHeader;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -387,7 +413,7 @@ var styles = {
 exports.default = CalendarOuter;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -403,13 +429,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _CalendarDay = __webpack_require__(6);
+var _CalendarDay = __webpack_require__(7);
 
 var _CalendarDay2 = _interopRequireDefault(_CalendarDay);
 
 var _constants = __webpack_require__(1);
 
-var _utils = __webpack_require__(8);
+var _utils = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -457,7 +483,11 @@ var CalendarColumn = function (_React$Component) {
           { style: styles.header },
           this.props.dayOfWeek
         ),
-        this.renderColumn()
+        _react2.default.createElement(
+          'div',
+          null,
+          this.renderColumn()
+        )
       );
     }
   }]);
@@ -471,77 +501,17 @@ var styles = {
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    border: '1px solid red'
+    justifyContent: 'flex-start'
   },
   header: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#444',
+    // backgroundColor: 'rgb(253, 0, 67)',
+    color: 'white'
   }
 };
 
 exports.default = CalendarColumn;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var CalendarDay = function (_React$Component) {
-  _inherits(CalendarDay, _React$Component);
-
-  function CalendarDay() {
-    _classCallCheck(this, CalendarDay);
-
-    return _possibleConstructorReturn(this, (CalendarDay.__proto__ || Object.getPrototypeOf(CalendarDay)).apply(this, arguments));
-  }
-
-  _createClass(CalendarDay, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        { style: styles },
-        _react2.default.createElement(
-          'div',
-          null,
-          this.props.day || 'x'
-        )
-      );
-    }
-  }]);
-
-  return CalendarDay;
-}(_react2.default.Component);
-
-var styles = {
-  boxSizing: 'border-box',
-  border: '1px solid blue',
-  flex: 1
-};
-exports.default = CalendarDay;
-
-// rgb(253, 0, 67)
-// rgb(242, 225, 50)
 
 /***/ }),
 /* 7 */
@@ -560,19 +530,131 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _CalendarOuter = __webpack_require__(4);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DEFAULT_STYLE = {
+  cell: {
+    cursor: 'pointer',
+    boxSizing: 'border-box',
+    border: '1px solid rgba(200, 200, 200, 0.4)',
+    flex: 1,
+    height: 'calc(100vw / 14)'
+  },
+  date: {
+    fontSize: '0.8em',
+    textAlign: 'right',
+    padding: '2px 5px',
+    backgroundColor: 'rgba(200, 200, 200, 0.3)'
+  }
+};
+
+var CalendarDay = function (_React$Component) {
+  _inherits(CalendarDay, _React$Component);
+
+  function CalendarDay(props) {
+    _classCallCheck(this, CalendarDay);
+
+    var _this = _possibleConstructorReturn(this, (CalendarDay.__proto__ || Object.getPrototypeOf(CalendarDay)).call(this, props));
+
+    _this.state = {
+      styles: JSON.parse(JSON.stringify(DEFAULT_STYLE))
+    };
+
+    _this.onMouseOver = _this.onMouseOver.bind(_this);
+    _this.onMouseOut = _this.onMouseOut.bind(_this);
+    return _this;
+  }
+
+  _createClass(CalendarDay, [{
+    key: 'onMouseOver',
+    value: function onMouseOver() {
+      var styles = JSON.parse(JSON.stringify(DEFAULT_STYLE));
+      styles.date.backgroundColor = 'rgb(253, 0, 67)';
+      styles.date.color = 'white';
+      styles.cell.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+      this.setState({ styles: styles });
+    }
+  }, {
+    key: 'onMouseOut',
+    value: function onMouseOut() {
+      var styles = JSON.parse(JSON.stringify(DEFAULT_STYLE));
+      this.setState({ styles: styles });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      if (typeof this.props.day === 'number') {
+        return _react2.default.createElement(
+          'div',
+          {
+            style: this.state.styles.cell,
+            onMouseOver: this.onMouseOver,
+            onMouseOut: this.onMouseOut
+          },
+          _react2.default.createElement(
+            'div',
+            { style: this.state.styles.date },
+            this.props.day
+          )
+        );
+      } else {
+        return _react2.default.createElement(
+          'div',
+          { style: this.state.styles.cell },
+          _react2.default.createElement(
+            'div',
+            { style: this.state.styles.date },
+            '\xA0'
+          )
+        );
+      }
+    }
+  }]);
+
+  return CalendarDay;
+}(_react2.default.Component);
+
+exports.default = CalendarDay;
+
+// rgb(253, 0, 67)
+// rgb(242, 225, 50)
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CalendarOuter = __webpack_require__(5);
 
 var _CalendarOuter2 = _interopRequireDefault(_CalendarOuter);
 
-var _CalendarHeader = __webpack_require__(3);
+var _CalendarHeader = __webpack_require__(4);
 
 var _CalendarHeader2 = _interopRequireDefault(_CalendarHeader);
 
-var _CalendarBody = __webpack_require__(2);
+var _CalendarBody = __webpack_require__(3);
 
 var _CalendarBody2 = _interopRequireDefault(_CalendarBody);
 
-var _utils = __webpack_require__(8);
+var _utils = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -581,6 +663,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DEFAULTS = {
+  fontFamily: 'Times New Roman'
+};
 
 var AvailabilityCalendar = function (_React$Component) {
   _inherits(AvailabilityCalendar, _React$Component);
@@ -593,10 +679,27 @@ var AvailabilityCalendar = function (_React$Component) {
     _this.state = { month: 9, year: 2017, bins: (0, _utils.mapDays)() };
     _this.onMonthChange = _this.onMonthChange.bind(_this);
     _this.onYearChange = _this.onYearChange.bind(_this);
+
+    var userStyles = _this.gatherUserStyles();
+    _this.styles = Object.assign(DEFAULTS, userStyles);
     return _this;
   }
 
   _createClass(AvailabilityCalendar, [{
+    key: 'gatherUserStyles',
+    value: function gatherUserStyles() {
+      var _this2 = this;
+
+      var userStyles = {};
+      var styles = Object.keys(DEFAULTS);
+      styles.forEach(function (style) {
+        if (_this2.props.hasOwnProperty(style)) {
+          userStyles[style] = _this2.props[style];
+        }
+      });
+      return userStyles;
+    }
+  }, {
     key: 'onMonthChange',
     value: function onMonthChange(month) {
       this.setState({ month: month });
@@ -612,7 +715,7 @@ var AvailabilityCalendar = function (_React$Component) {
       var bins = (0, _utils.binDates)(this.state.year, this.state.month);
       return _react2.default.createElement(
         _CalendarOuter2.default,
-        null,
+        { style: this.styles },
         _react2.default.createElement(_CalendarHeader2.default, {
           onMonthChange: this.onMonthChange,
           onYearChange: this.onYearChange
@@ -630,89 +733,6 @@ var AvailabilityCalendar = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = AvailabilityCalendar;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.daysInMonth = daysInMonth;
-exports.dateIsDayOfWeek = dateIsDayOfWeek;
-exports.mapDays = mapDays;
-exports.binDates = binDates;
-
-var _constants = __webpack_require__(1);
-
-function daysInMonth(year, month) {
-  var zeroIndexed = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
-  // need month to not be zero indexed for this function to work
-  // month = zeroIndexed ? month + 1 : month;
-  // return new Date(year, month, 0).getDate();
-  return 32 - new Date(year, month, 32).getDate();
-}
-
-// check if a given date is a given day of the week
-function dateIsDayOfWeek(year, month, date, dayOfWeek) {
-  var zeroIndexed = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
-
-  // different behavior here is needed than in #daysInMonth. here, we need the
-  // month to be zero-indexed
-  month = zeroIndexed ? month : month - 1;
-  var d = new Date(year, month, date);
-  var index = d.getDay();
-  return dayOfWeek === _constants.DAYS_OF_WEEK[index];
-}
-
-function mapDays(days) {
-  var obj = {};
-  _constants.DAYS_OF_WEEK.forEach(function (day) {
-    return obj[day] = [];
-  });
-  return _constants.DAYS_OF_WEEK.reduce(function (result, day) {
-    result[day] = [];
-    return result;
-  }, {});
-}
-
-function binDates(year, month) {
-  var zeroIndexed = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-
-  month = zeroIndexed ? month : month - 1;
-  var date = new Date(year, month, 0);
-  var bins = mapDays(_constants.DAYS_OF_WEEK);
-  var numDays = daysInMonth(year, month);
-  var firstDayIndex = 0;
-  var lastDayIndex = 0;
-
-  for (var i = 1; i <= numDays; i++) {
-    var dow = _constants.DAYS_OF_WEEK[new Date(year, month, i).getDay()];
-    if (i === 1) firstDayIndex = _constants.DAYS_OF_WEEK.indexOf(dow);else if (i === numDays) lastDayIndex = _constants.DAYS_OF_WEEK.indexOf(dow);
-    bins[dow].push(i);
-  }
-
-  var numWeeks = Object.keys(bins).reduce(function (max, bin) {
-    if (bins[bin].length > max) max = bins[bin].length;
-    return max;
-  }, 0);
-
-  Object.keys(bins).forEach(function (bin) {
-    var dowIndex = _constants.DAYS_OF_WEEK.indexOf(bin);
-    if (dowIndex < firstDayIndex) {
-      bins[bin].unshift(0);
-    }
-    if (dowIndex > lastDayIndex) {
-      bins[bin].push(0);
-    }
-  });
-
-  return bins;
-}
 
 /***/ })
 /******/ ]);

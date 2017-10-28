@@ -1,23 +1,11 @@
 import { DAYS_OF_WEEK } from './constants';
 
-export function daysInMonth(year, month, zeroIndexed = true) {
-  // need month to not be zero indexed for this function to work
-  // month = zeroIndexed ? month + 1 : month;
-  // return new Date(year, month, 0).getDate();
+export function daysInMonth(year, month) {
   return 32 - new Date(year, month, 32).getDate();
 }
 
 // check if a given date is a given day of the week
-export function dateIsDayOfWeek(
-  year,
-  month,
-  date,
-  dayOfWeek,
-  zeroIndexed = true
-) {
-  // different behavior here is needed than in #daysInMonth. here, we need the
-  // month to be zero-indexed
-  month = zeroIndexed ? month : month - 1;
+export function dateIsDayOfWeek(year, month, date, dayOfWeek) {
   let d = new Date(year, month, date);
   let index = d.getDay();
   return dayOfWeek === DAYS_OF_WEEK[index];
@@ -32,8 +20,7 @@ export function mapDays(days) {
   }, {});
 }
 
-export function binDates(year, month, zeroIndexed = true) {
-  month = zeroIndexed ? month : month - 1;
+export function binDates(year, month) {
   let date = new Date(year, month, 0);
   let bins = mapDays(DAYS_OF_WEEK);
   let numDays = daysInMonth(year, month);

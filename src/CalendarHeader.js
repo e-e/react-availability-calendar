@@ -19,33 +19,30 @@ class CalendarHeader extends React.Component {
   renderMonths() {
     const months = [];
     return MONTHS.map((month, index) => {
-      return <option value={index}>{month}</option>;
+      return (
+        <option value={index} key={`month-${month}`}>
+          {month}
+        </option>
+      );
     });
   }
   renderYears() {
     const years = [];
     for (let i = 2000; i <= 2017; i++) {
-      years.push(<option value={i}>{i}</option>);
+      years.push(
+        <option value={i} key={`year-${i}`}>
+          {i}
+        </option>
+      );
     }
     return years;
   }
   render() {
     console.log(this.state);
     return (
-      <div>
+      <div className="calendar-header">
         <select onChange={this.monthChange} value={this.state.month}>
-          <option value="0">January</option>
-          <option value="1">February</option>
-          <option value="2">March</option>
-          <option value="3">April</option>
-          <option value="4">May</option>
-          <option value="5">June</option>
-          <option value="6">July</option>
-          <option value="7">August</option>
-          <option value="8">September</option>
-          <option value="9">October</option>
-          <option value="10">November</option>
-          <option value="11">December</option>
+          {this.renderMonths()}
         </select>
         <select onChange={this.yearChange} value={this.state.year}>
           {this.renderYears()}
