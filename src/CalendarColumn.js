@@ -23,6 +23,8 @@ class CalendarColumn extends React.Component {
             year={this.props.year}
             month={this.props.month}
             day={day}
+            onChangeView={this.props.onChangeView}
+            events={this.props.events}
           />
         );
     });
@@ -48,7 +50,10 @@ const styles = {
   },
   header: {
     flex: 1,
-    backgroundColor: '#444',
+    backgroundColor: '#555',
+    padding: '3px 0px',
+    fontSize: '0.6rem',
+    textTransform: 'uppercase',
     // backgroundColor: 'rgb(253, 0, 67)',
     color: 'white'
   }

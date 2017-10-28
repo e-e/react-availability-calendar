@@ -224,7 +224,9 @@ var CalendarBody = function (_React$Component) {
           year: _this2.props.year,
           month: _this2.props.month,
           dayOfWeek: dow,
-          days: _this2.props.bins[dow]
+          days: _this2.props.bins[dow],
+          onChangeView: _this2.props.onChangeView,
+          events: _this2.props.events
         });
       });
     }
@@ -468,7 +470,9 @@ var CalendarColumn = function (_React$Component) {
           key: 'day-' + _this2.props.year + '-' + _this2.props.month + '-' + day + '-' + _this2.props.dayOfWeek,
           year: _this2.props.year,
           month: _this2.props.month,
-          day: day
+          day: day,
+          onChangeView: _this2.props.onChangeView,
+          events: _this2.props.events
         });
       });
     }
@@ -505,7 +509,10 @@ var styles = {
   },
   header: {
     flex: 1,
-    backgroundColor: '#444',
+    backgroundColor: '#555',
+    padding: '3px 0px',
+    fontSize: '0.6rem',
+    textTransform: 'uppercase',
     // backgroundColor: 'rgb(253, 0, 67)',
     color: 'white'
   }
@@ -523,6 +530,8 @@ exports.default = CalendarColumn;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -566,18 +575,53 @@ var CalendarDay = function (_React$Component) {
       styles: JSON.parse(JSON.stringify(DEFAULT_STYLE))
     };
 
+    _this.eventkey = _this.props.year + '-' + (_this.props.month + 1) + '-' + _this.props.day;
+
     _this.onMouseOver = _this.onMouseOver.bind(_this);
     _this.onMouseOut = _this.onMouseOut.bind(_this);
+
+    _this.onClick = _this.onClick.bind(_this);
     return _this;
   }
 
   _createClass(CalendarDay, [{
+    key: 'hasEvents',
+    value: function hasEvents() {
+      return this.props.events.hasOwnProperty(this.eventkey);
+    }
+  }, {
+    key: 'hasAllDayEvent',
+    value: function hasAllDayEvent(eventDay) {
+      if (eventDay.constructor === Array) {
+        for (var i = 0; i < eventDay.length; i++) {
+          if (eventDay[i].hasOwnProperty('title') && eventDay[i].isAllDay) {
+            return true;
+          }
+        }
+      } else if ((typeof eventDay === 'undefined' ? 'undefined' : _typeof(eventDay)) === 'object' && eventDay.hasOwnProperty('title')) {
+        return !!eventDay.isAllDay;
+      }
+      return false;
+    }
+  }, {
+    key: 'isAvailable',
+    value: function isAvailable() {
+      return !this.hasEvents() || this.hasEvents() && !this.hasAllDayEvent(this.props.events[this.eventkey]);
+    }
+  }, {
+    key: 'onClick',
+    value: function onClick(e) {
+      if (this.isAvailable()) {
+        this.props.onChangeView('form');
+      }
+    }
+  }, {
     key: 'onMouseOver',
     value: function onMouseOver() {
       var styles = JSON.parse(JSON.stringify(DEFAULT_STYLE));
       styles.date.backgroundColor = 'rgb(253, 0, 67)';
       styles.date.color = 'white';
-      styles.cell.backgroundColor = 'rgba(200, 200, 200, 0.3)';
+      // styles.cell.backgroundColor = 'rgba(200, 200, 200, 0.3)';
       this.setState({ styles: styles });
     }
   }, {
@@ -595,7 +639,8 @@ var CalendarDay = function (_React$Component) {
           {
             style: this.state.styles.cell,
             onMouseOver: this.onMouseOver,
-            onMouseOut: this.onMouseOut
+            onMouseOut: this.onMouseOut,
+            onClick: this.onClick
           },
           _react2.default.createElement(
             'div',
@@ -609,7 +654,7 @@ var CalendarDay = function (_React$Component) {
           { style: this.state.styles.cell },
           _react2.default.createElement(
             'div',
-            { style: this.state.styles.date },
+            null,
             '\xA0'
           )
         );
@@ -646,15 +691,13 @@ var _CalendarOuter = __webpack_require__(5);
 
 var _CalendarOuter2 = _interopRequireDefault(_CalendarOuter);
 
-var _CalendarHeader = __webpack_require__(4);
+var _Calendar = __webpack_require__(9);
 
-var _CalendarHeader2 = _interopRequireDefault(_CalendarHeader);
+var _Calendar2 = _interopRequireDefault(_Calendar);
 
-var _CalendarBody = __webpack_require__(3);
+var _CalendarForm = __webpack_require__(10);
 
-var _CalendarBody2 = _interopRequireDefault(_CalendarBody);
-
-var _utils = __webpack_require__(2);
+var _CalendarForm2 = _interopRequireDefault(_CalendarForm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -676,16 +719,19 @@ var AvailabilityCalendar = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (AvailabilityCalendar.__proto__ || Object.getPrototypeOf(AvailabilityCalendar)).call(this, props));
 
-    _this.state = { month: 9, year: 2017, bins: (0, _utils.mapDays)() };
-    _this.onMonthChange = _this.onMonthChange.bind(_this);
-    _this.onYearChange = _this.onYearChange.bind(_this);
-
+    _this.state = { view: 'calendar' };
     var userStyles = _this.gatherUserStyles();
     _this.styles = Object.assign(DEFAULTS, userStyles);
+    _this.changeView = _this.changeView.bind(_this);
     return _this;
   }
 
   _createClass(AvailabilityCalendar, [{
+    key: 'changeView',
+    value: function changeView(view) {
+      this.setState({ view: view });
+    }
+  }, {
     key: 'gatherUserStyles',
     value: function gatherUserStyles() {
       var _this2 = this;
@@ -700,6 +746,92 @@ var AvailabilityCalendar = function (_React$Component) {
       return userStyles;
     }
   }, {
+    key: 'renderForm',
+    value: function renderForm() {
+      return _react2.default.createElement(_CalendarForm2.default, { onChangeView: this.changeView, events: this.props.events });
+    }
+  }, {
+    key: 'renderCalendar',
+    value: function renderCalendar() {
+      return _react2.default.createElement(_Calendar2.default, { onChangeView: this.changeView, events: this.props.events });
+    }
+  }, {
+    key: 'renderView',
+    value: function renderView() {
+      switch (this.state.view) {
+        case 'form':
+          return this.renderForm();
+        case 'calendar':
+        default:
+          return this.renderCalendar();
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _CalendarOuter2.default,
+        { style: this.styles },
+        this.renderView()
+      );
+    }
+  }]);
+
+  return AvailabilityCalendar;
+}(_react2.default.Component);
+
+exports.default = AvailabilityCalendar;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _CalendarHeader = __webpack_require__(4);
+
+var _CalendarHeader2 = _interopRequireDefault(_CalendarHeader);
+
+var _CalendarBody = __webpack_require__(3);
+
+var _CalendarBody2 = _interopRequireDefault(_CalendarBody);
+
+var _utils = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Calendar = function (_React$Component) {
+  _inherits(Calendar, _React$Component);
+
+  function Calendar(props) {
+    _classCallCheck(this, Calendar);
+
+    var _this = _possibleConstructorReturn(this, (Calendar.__proto__ || Object.getPrototypeOf(Calendar)).call(this, props));
+
+    _this.state = { month: 9, year: 2017, bins: (0, _utils.mapDays)() };
+    _this.onMonthChange = _this.onMonthChange.bind(_this);
+    _this.onYearChange = _this.onYearChange.bind(_this);
+    return _this;
+  }
+
+  _createClass(Calendar, [{
     key: 'onMonthChange',
     value: function onMonthChange(month) {
       this.setState({ month: month });
@@ -714,8 +846,8 @@ var AvailabilityCalendar = function (_React$Component) {
     value: function render() {
       var bins = (0, _utils.binDates)(this.state.year, this.state.month);
       return _react2.default.createElement(
-        _CalendarOuter2.default,
-        { style: this.styles },
+        'div',
+        null,
         _react2.default.createElement(_CalendarHeader2.default, {
           onMonthChange: this.onMonthChange,
           onYearChange: this.onYearChange
@@ -723,16 +855,89 @@ var AvailabilityCalendar = function (_React$Component) {
         _react2.default.createElement(_CalendarBody2.default, {
           month: this.state.month,
           year: this.state.year,
-          bins: bins
+          bins: bins,
+          onChangeView: this.props.onChangeView,
+          events: this.props.events
         })
       );
     }
   }]);
 
-  return AvailabilityCalendar;
+  return Calendar;
 }(_react2.default.Component);
 
-exports.default = AvailabilityCalendar;
+exports.default = Calendar;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CalendarForm = function (_React$Component) {
+  _inherits(CalendarForm, _React$Component);
+
+  function CalendarForm(props) {
+    _classCallCheck(this, CalendarForm);
+
+    var _this = _possibleConstructorReturn(this, (CalendarForm.__proto__ || Object.getPrototypeOf(CalendarForm)).call(this, props));
+
+    _this.onCancelForm = _this.onCancelForm.bind(_this);
+    return _this;
+  }
+
+  _createClass(CalendarForm, [{
+    key: 'onCancelForm',
+    value: function onCancelForm(e) {
+      this.props.onChangeView('calendar');
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'div',
+          null,
+          'CalendarForm'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'button',
+            { onClick: this.onCancelForm },
+            'Cancel'
+          )
+        )
+      );
+    }
+  }]);
+
+  return CalendarForm;
+}(_react2.default.Component);
+
+exports.default = CalendarForm;
 
 /***/ })
 /******/ ]);

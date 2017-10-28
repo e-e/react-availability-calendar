@@ -1,8 +1,8 @@
 import React from 'react';
 import CalendarOuter from './CalendarOuter';
-import CalendarHeader from './CalendarHeader';
-import CalendarBody from './CalendarBody';
-import { binDates, mapDays, daysInMonth } from './utils/utils';
+
+import Calendar from './Calendar';
+import CalendarForm from './CalendarForm';
 
 const DEFAULTS = {
   fontFamily: 'Times New Roman'
@@ -11,14 +11,14 @@ const DEFAULTS = {
 class AvailabilityCalendar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { month: 9, year: 2017, bins: mapDays() };
-    this.onMonthChange = this.onMonthChange.bind(this);
-    this.onYearChange = this.onYearChange.bind(this);
-
+    this.state = { view: 'calendar' };
     let userStyles = this.gatherUserStyles();
     this.styles = Object.assign(DEFAULTS, userStyles);
+    this.changeView = this.changeView.bind(this);
   }
-
+  changeView(view) {
+    this.setState({ view });
+  }
   gatherUserStyles() {
     let userStyles = {};
     let styles = Object.keys(DEFAULTS);
@@ -29,26 +29,28 @@ class AvailabilityCalendar extends React.Component {
     });
     return userStyles;
   }
-  onMonthChange(month) {
-    this.setState({ month });
+  renderForm() {
+    return (
+      <CalendarForm onChangeView={this.changeView} events={this.props.events} />
+    );
   }
-  onYearChange(year) {
-    this.setState({ year });
+  renderCalendar() {
+    return (
+      <Calendar onChangeView={this.changeView} events={this.props.events} />
+    );
+  }
+  renderView() {
+    switch (this.state.view) {
+      case 'form':
+        return this.renderForm();
+      case 'calendar':
+      default:
+        return this.renderCalendar();
+    }
   }
   render() {
-    let bins = binDates(this.state.year, this.state.month);
     return (
-      <CalendarOuter style={this.styles}>
-        <CalendarHeader
-          onMonthChange={this.onMonthChange}
-          onYearChange={this.onYearChange}
-        />
-        <CalendarBody
-          month={this.state.month}
-          year={this.state.year}
-          bins={bins}
-        />
-      </CalendarOuter>
+      <CalendarOuter style={this.styles}>{this.renderView()}</CalendarOuter>
     );
   }
 }

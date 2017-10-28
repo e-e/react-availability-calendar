@@ -17,6 +17,8 @@ class CalendarBody extends React.Component {
           month={this.props.month}
           dayOfWeek={dow}
           days={this.props.bins[dow]}
+          onChangeView={this.props.onChangeView}
+          events={this.props.events}
         />
       );
     });
