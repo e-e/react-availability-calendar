@@ -1,7 +1,7 @@
 import React from 'react';
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
-import { binDates, mapDays, daysInMonth } from './utils/utils';
+import { binDates, mapDays, daysInMonth } from '../utils/utils';
 
 class Calendar extends React.Component {
   constructor(props) {

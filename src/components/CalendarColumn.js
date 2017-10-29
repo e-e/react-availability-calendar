@@ -1,7 +1,7 @@
 import React from 'react';
 import CalendarDay from './CalendarDay';
-import { DAYS_OF_WEEK } from './utils/constants';
-import { daysInMonth } from './utils/utils';
+import { DAYS_OF_WEEK } from '../utils/constants';
+import { daysInMonth } from '../utils/utils';
 
 class CalendarColumn extends React.Component {
   renderColumn() {

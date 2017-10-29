@@ -1,5 +1,5 @@
 import React from 'react';
-import { MONTHS } from './utils/constants';
+import { MONTHS } from '../utils/constants';
 class CalendarHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -52,4 +52,8 @@ class CalendarHeader extends React.Component {
   }
 }
 
-export default CalendarHeader;
+function mapStateToProps(state) {
+  return { date: state.date };
+}
+
+export default connect(mapStateToProps, null)(CalendarHeader);

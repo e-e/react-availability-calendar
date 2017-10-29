@@ -1,12 +1,18 @@
 import React from 'react';
-import CalendarOuter from './CalendarOuter';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reducers from './reducers';
 
-import Calendar from './Calendar';
-import CalendarForm from './CalendarForm';
+import CalendarOuter from './components/CalendarOuter';
+
+import Calendar from './components/Calendar';
+import CalendarForm from './components/CalendarForm';
 
 const DEFAULTS = {
   fontFamily: 'Times New Roman'
 };
+
+const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 class AvailabilityCalendar extends React.Component {
   constructor(props) {
@@ -50,7 +56,9 @@ class AvailabilityCalendar extends React.Component {
   }
   render() {
     return (
-      <CalendarOuter style={this.styles}>{this.renderView()}</CalendarOuter>
+      <Provider store={createStoreWithMiddleware(reducers)}>
+        <CalendarOuter style={this.styles}>{this.renderView()}</CalendarOuter>
+      </Provider>
     );
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import CalendarColumn from './CalendarColumn';
-import { DAYS_OF_WEEK } from './utils/constants';
-import { binDates } from './utils/utils';
+import { DAYS_OF_WEEK } from '../utils/constants';
+import { binDates } from '../utils/utils';
 
 class CalendarBody extends React.Component {
   constructor(props) {
