@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 const DEFAULT_STYLE = {
   cell: {
     cursor: 'pointer',
@@ -93,7 +96,15 @@ class CalendarDay extends React.Component {
   }
 }
 
-export default CalendarDay;
+function mapStateToProps(state) {
+  return { date: state.date, calendar: state.calendar, events: state.events };
+}
+
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators({ setYear, setMonth }, dispatch);
+// }
+
+export default connect(mapStateToProps, null)(CalendarDay);
 
 // rgb(253, 0, 67)
 // rgb(242, 225, 50)

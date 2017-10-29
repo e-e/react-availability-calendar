@@ -1,20 +1,30 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setYear, setMonth, setDate } from '../actions';
+
 import { MONTHS } from '../utils/constants';
 class CalendarHeader extends React.Component {
   constructor(props) {
     super(props);
-    let now = new Date();
-    this.state = { month: now.getMonth(), year: now.getFullYear() };
     this.monthChange = this.monthChange.bind(this);
     this.yearChange = this.yearChange.bind(this);
   }
+  componentWillMount() {
+    const today = new Date();
+    this.props.setDate({ year: today.getFullYear(), month: today.getMonth() });
+  }
   monthChange(event) {
-    this.setState({ month: event.target.value });
-    this.props.onMonthChange(event.target.value);
+    this.props.setDate({
+      year: parseInt(this.yearSelect.value),
+      month: parseInt(this.monthSelect.value)
+    });
   }
   yearChange(event) {
-    this.setState({ year: event.target.value });
-    this.props.onYearChange(event.target.value);
+    this.props.setDate({
+      year: parseInt(this.yearSelect.value),
+      month: parseInt(this.monthSelect.value)
+    });
   }
   renderMonths() {
     const months = [];
@@ -38,13 +48,25 @@ class CalendarHeader extends React.Component {
     return years;
   }
   render() {
-    console.log(this.state);
+    console.log(this.props);
     return (
       <div className="calendar-header">
-        <select onChange={this.monthChange} value={this.state.month}>
+        <select
+          ref={select => {
+            this.monthSelect = select;
+          }}
+          onChange={this.monthChange}
+          value={this.props.date.month}
+        >
           {this.renderMonths()}
         </select>
-        <select onChange={this.yearChange} value={this.state.year}>
+        <select
+          ref={select => {
+            this.yearSelect = select;
+          }}
+          onChange={this.yearChange}
+          value={this.props.date.year}
+        >
           {this.renderYears()}
         </select>
       </div>
@@ -56,4 +78,8 @@ function mapStateToProps(state) {
   return { date: state.date };
 }
 
-export default connect(mapStateToProps, null)(CalendarHeader);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ setYear, setMonth, setDate }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarHeader);

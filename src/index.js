@@ -12,7 +12,7 @@ const DEFAULTS = {
   fontFamily: 'Times New Roman'
 };
 
-const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
+const createStoreWithMiddleware = applyMiddleware()(createStore);
 
 class AvailabilityCalendar extends React.Component {
   constructor(props) {

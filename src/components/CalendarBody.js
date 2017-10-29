@@ -13,12 +13,8 @@ class CalendarBody extends React.Component {
       return (
         <CalendarColumn
           key={`calendar-column-${key}`}
-          year={this.props.year}
-          month={this.props.month}
           dayOfWeek={dow}
-          days={this.props.bins[dow]}
           onChangeView={this.props.onChangeView}
-          events={this.props.events}
         />
       );
     });
