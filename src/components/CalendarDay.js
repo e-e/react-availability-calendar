@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { setView } from '../actions';
 
 const DEFAULT_STYLE = {
   cell: {
@@ -60,7 +61,7 @@ class CalendarDay extends React.Component {
   }
   onClick(e) {
     if (this.isAvailable()) {
-      this.props.onChangeView('form');
+      this.props.setView('form');
     }
   }
   onMouseOver() {
@@ -100,11 +101,11 @@ function mapStateToProps(state) {
   return { date: state.date, calendar: state.calendar, events: state.events };
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators({ setYear, setMonth }, dispatch);
-// }
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ setView }, dispatch);
+}
 
-export default connect(mapStateToProps, null)(CalendarDay);
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarDay);
 
 // rgb(253, 0, 67)
 // rgb(242, 225, 50)

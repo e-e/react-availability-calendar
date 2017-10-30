@@ -1,6 +1,6 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { Provider, connect } from 'react-redux';
+import { createStore, applyMiddleware, bindActionCreators } from 'redux';
 import reducers from './reducers';
 
 import CalendarOuter from './components/CalendarOuter';
@@ -20,10 +20,6 @@ class AvailabilityCalendar extends React.Component {
     this.state = { view: 'calendar' };
     let userStyles = this.gatherUserStyles();
     this.styles = Object.assign(DEFAULTS, userStyles);
-    this.changeView = this.changeView.bind(this);
-  }
-  changeView(view) {
-    this.setState({ view });
   }
   gatherUserStyles() {
     let userStyles = {};
@@ -35,29 +31,11 @@ class AvailabilityCalendar extends React.Component {
     });
     return userStyles;
   }
-  renderForm() {
-    return (
-      <CalendarForm onChangeView={this.changeView} events={this.props.events} />
-    );
-  }
-  renderCalendar() {
-    return (
-      <Calendar onChangeView={this.changeView} events={this.props.events} />
-    );
-  }
-  renderView() {
-    switch (this.state.view) {
-      case 'form':
-        return this.renderForm();
-      case 'calendar':
-      default:
-        return this.renderCalendar();
-    }
-  }
+
   render() {
     return (
       <Provider store={createStoreWithMiddleware(reducers)}>
-        <CalendarOuter style={this.styles}>{this.renderView()}</CalendarOuter>
+        <CalendarOuter style={this.styles} />
       </Provider>
     );
   }

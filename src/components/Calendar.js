@@ -1,4 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setEvents } from '../actions';
+
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
 import { binDates, mapDays, daysInMonth } from '../utils/utils';
@@ -6,24 +10,23 @@ import { binDates, mapDays, daysInMonth } from '../utils/utils';
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { month: 9, year: 2017, bins: mapDays() };
+  }
+  componentWillMount() {
+    this.props.setEvents(this.props.eventData);
   }
 
   render() {
-    let bins = binDates(this.state.year, this.state.month);
     return (
       <div>
         <CalendarHeader />
-        <CalendarBody
-          month={this.state.month}
-          year={this.state.year}
-          bins={bins}
-          onChangeView={this.props.onChangeView}
-          events={this.props.events}
-        />
+        <CalendarBody />
       </div>
     );
   }
 }
 
-export default Calendar;
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ setEvents }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(Calendar);
