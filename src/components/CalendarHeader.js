@@ -50,7 +50,7 @@ class CalendarHeader extends React.Component {
   render() {
     console.log(this.props);
     return (
-      <div className="calendar-header">
+      <div className="calendar-header" style={{ textAlign: 'left' }}>
         <select
           ref={select => {
             this.monthSelect = select;

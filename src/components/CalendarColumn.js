@@ -36,7 +36,6 @@ class CalendarColumn extends React.Component {
   }
 
   render() {
-    console.log('dayOfWeek: ', this.props.dayOfWeek);
     return (
       <div style={styles.wrap}>
         <div style={styles.header}>{this.props.dayOfWeek}</div>

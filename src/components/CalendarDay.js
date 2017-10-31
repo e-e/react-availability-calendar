@@ -1,13 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setView } from '../actions';
+import { selectDay } from '../actions';
 
 const DEFAULT_STYLE = {
   cell: {
     cursor: 'pointer',
     boxSizing: 'border-box',
     border: '1px solid rgba(200, 200, 200, 0.4)',
+    flex: 1,
+    height: 'calc(100vw / 14)'
+  },
+  unavailableCell: {
+    cursor: 'pointer',
+    boxSizing: 'border-box',
+    border: '1px solid rgba(200, 200, 200, 0.4)',
+    backgroundColor: 'red',
     flex: 1,
     height: 'calc(100vw / 14)'
   },
@@ -61,14 +69,20 @@ class CalendarDay extends React.Component {
   }
   onClick(e) {
     if (this.isAvailable()) {
-      this.props.setView('form');
+      this.props.selectDay({
+        view: 'form',
+        date: {
+          year: this.props.year,
+          month: this.props.month,
+          day: this.props.day
+        }
+      });
     }
   }
   onMouseOver() {
     let styles = JSON.parse(JSON.stringify(DEFAULT_STYLE));
     styles.date.backgroundColor = 'rgb(253, 0, 67)';
     styles.date.color = 'white';
-    // styles.cell.backgroundColor = 'rgba(200, 200, 200, 0.3)';
     this.setState({ styles });
   }
   onMouseOut() {
@@ -77,9 +91,16 @@ class CalendarDay extends React.Component {
   }
   render() {
     if (typeof this.props.day === 'number') {
+      let _style = this.hasEvents()
+        ? this.state.styles.unavailableCell
+        : this.state.styles.cell;
+      if (this.hasEvents()) {
+        console.log('_style', _style);
+      }
+
       return (
         <div
-          style={this.state.styles.cell}
+          style={_style}
           onMouseOver={this.onMouseOver}
           onMouseOut={this.onMouseOut}
           onClick={this.onClick}
@@ -102,7 +123,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ setView }, dispatch);
+  return bindActionCreators({ selectDay }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarDay);

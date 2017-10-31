@@ -13,6 +13,8 @@ const DEFAULTS = {
 };
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
+// let store = createStore(reducers);
+let store = createStoreWithMiddleware(reducers);
 
 class AvailabilityCalendar extends React.Component {
   constructor(props) {
@@ -33,9 +35,14 @@ class AvailabilityCalendar extends React.Component {
   }
 
   render() {
+    console.log('STORE: ', store);
     return (
-      <Provider store={createStoreWithMiddleware(reducers)}>
-        <CalendarOuter style={this.styles} />
+      <Provider store={store}>
+        <CalendarOuter
+          style={this.styles}
+          eventData={this.props.eventData}
+          onCreateEvent={this.props.onCreateEvent}
+        />
       </Provider>
     );
   }

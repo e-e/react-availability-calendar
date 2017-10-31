@@ -1,18 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { setEvents } from '../actions';
 
 import Calendar from './Calendar';
 import CalendarForm from './CalendarForm';
 
 class CalendarOuter extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  componentWillMount() {
+    this.props.setEvents(this.props.eventData);
+  }
   renderCalendar() {
     return <Calendar />;
   }
   renderForm() {
-    return <CalendarForm />;
+    return <CalendarForm onCreateEvent={this.props.onCreateEvent} />;
   }
   renderView() {
+    console.log('EVENTS: ', this.props.events);
     switch (this.props.view) {
       case 'form':
         return this.renderForm();
@@ -33,7 +41,9 @@ const styles = {
   height: '100%'
 };
 function mapStateToProps(state) {
-  return { view: state.view };
+  return { view: state.view, events: state.events };
 }
-
-export default connect(mapStateToProps, null)(CalendarOuter);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ setEvents }, dispatch);
+}
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarOuter);
