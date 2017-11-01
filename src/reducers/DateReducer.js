@@ -21,10 +21,9 @@ export default function(state = DEFAULT_DATE, action) {
 
     case SET_DATE:
       console.log('DateReducer: SET_DATE', action);
-      return Object.assign({}, state, {
-        year: parseInt(action.payload.year, 10),
-        month: parseInt(action.payload.month, 10)
-      });
+      let _newState = Object.assign({}, state, action.payload);
+      console.log('!!!!!!new date: ', _newState);
+      return _newState;
 
     default:
       return state;

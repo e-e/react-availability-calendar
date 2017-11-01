@@ -15,7 +15,7 @@ const DEFAULT_STYLE = {
     cursor: 'pointer',
     boxSizing: 'border-box',
     border: '1px solid rgba(200, 200, 200, 0.4)',
-    backgroundColor: 'red',
+    backgroundColor: 'rgba(100, 0, 0, 0.5)',
     flex: 1,
     height: 'calc(100vw / 14)'
   },

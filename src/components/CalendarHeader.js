@@ -2,8 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setYear, setMonth, setDate } from '../actions';
+import Select from '../common/Select';
 
 import { MONTHS } from '../utils/constants';
+
 class CalendarHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -14,16 +16,14 @@ class CalendarHeader extends React.Component {
     const today = new Date();
     this.props.setDate({ year: today.getFullYear(), month: today.getMonth() });
   }
-  monthChange(event) {
+  monthChange(month) {
     this.props.setDate({
-      year: parseInt(this.yearSelect.value),
-      month: parseInt(this.monthSelect.value)
+      month: parseInt(month, 10)
     });
   }
-  yearChange(event) {
+  yearChange(year) {
     this.props.setDate({
-      year: parseInt(this.yearSelect.value),
-      month: parseInt(this.monthSelect.value)
+      year: parseInt(year)
     });
   }
   renderMonths() {
@@ -47,31 +47,69 @@ class CalendarHeader extends React.Component {
     }
     return years;
   }
+  getMonths() {
+    let months = [];
+    MONTHS.forEach((name, value) => {
+      months.push({ name, value });
+    });
+    return months;
+  }
+  getYears() {
+    let years = [];
+    for (let i = 1990; i <= 2025; i++) {
+      years.push({ name: i, value: i });
+    }
+    return years;
+  }
+
   render() {
     console.log(this.props);
     return (
       <div className="calendar-header" style={{ textAlign: 'left' }}>
-        <select
-          ref={select => {
-            this.monthSelect = select;
+        <Select
+          onSelected={this.monthChange}
+          value={{
+            name: MONTHS[this.props.date.month],
+            value: this.props.date.month
           }}
-          onChange={this.monthChange}
-          value={this.props.date.month}
-        >
-          {this.renderMonths()}
-        </select>
-        <select
-          ref={select => {
-            this.yearSelect = select;
+          options={this.getMonths()}
+        />
+        <Select
+          onSelected={this.yearChange}
+          value={{
+            name: this.props.date.year,
+            value: this.props.date.year
           }}
-          onChange={this.yearChange}
-          value={this.props.date.year}
-        >
-          {this.renderYears()}
-        </select>
+          options={this.getYears()}
+        />
       </div>
     );
   }
+  // render() {
+  //   console.log(this.props);
+  //   return (
+  //     <div className="calendar-header" style={{ textAlign: 'left' }}>
+  //       <select
+  //         ref={select => {
+  //           this.monthSelect = select;
+  //         }}
+  //         onChange={this.monthChange}
+  //         value={this.props.date.month}
+  //       >
+  //         {this.renderMonths()}
+  //       </select>
+  //       <select
+  //         ref={select => {
+  //           this.yearSelect = select;
+  //         }}
+  //         onChange={this.yearChange}
+  //         value={this.props.date.year}
+  //       >
+  //         {this.renderYears()}
+  //       </select>
+  //     </div>
+  //   );
+  // }
 }
 
 function mapStateToProps(state) {
