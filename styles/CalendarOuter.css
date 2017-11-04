@@ -1,0 +1,7 @@
+.CalendarOuter {
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  box-sizing: border-box;
+  border: 1px solid black;
+  height: 100%;
+}

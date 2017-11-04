@@ -30,16 +30,10 @@ class CalendarOuter extends React.Component {
     }
   }
   render() {
-    return <div style={styles}>{this.renderView()}</div>;
+    return <div className="CalendarOuter">{this.renderView()}</div>;
   }
 }
-const styles = {
-  display: 'grid',
-  gridTemplateRows: '1fr 4fr',
-  boxSizing: 'border-box',
-  border: '1px solid black',
-  height: '100%'
-};
+
 function mapStateToProps(state) {
   return { view: state.view, events: state.events };
 }

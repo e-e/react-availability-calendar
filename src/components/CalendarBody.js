@@ -3,6 +3,8 @@ import CalendarColumn from './CalendarColumn';
 import { DAYS_OF_WEEK } from '../utils/constants';
 import { binDates } from '../utils/utils';
 
+import '../../styles/CalendarBody.css';
+
 class CalendarBody extends React.Component {
   constructor(props) {
     super(props);
@@ -20,13 +22,8 @@ class CalendarBody extends React.Component {
     });
   }
   render() {
-    return <div style={styles}>{this.renderColumns()}</div>;
+    return <div className="CalendarBody">{this.renderColumns()}</div>;
   }
 }
-const styles = {
-  // display: 'grid'
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'stretch'
-};
+
 export default CalendarBody;

@@ -63,7 +63,6 @@ class CalendarHeader extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div className="calendar-header" style={{ textAlign: 'left' }}>
         <Select
@@ -85,31 +84,6 @@ class CalendarHeader extends React.Component {
       </div>
     );
   }
-  // render() {
-  //   console.log(this.props);
-  //   return (
-  //     <div className="calendar-header" style={{ textAlign: 'left' }}>
-  //       <select
-  //         ref={select => {
-  //           this.monthSelect = select;
-  //         }}
-  //         onChange={this.monthChange}
-  //         value={this.props.date.month}
-  //       >
-  //         {this.renderMonths()}
-  //       </select>
-  //       <select
-  //         ref={select => {
-  //           this.yearSelect = select;
-  //         }}
-  //         onChange={this.yearChange}
-  //         value={this.props.date.year}
-  //       >
-  //         {this.renderYears()}
-  //       </select>
-  //     </div>
-  //   );
-  // }
 }
 
 function mapStateToProps(state) {
